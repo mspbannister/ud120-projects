@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 from prep_terrain_data import makeTerrainData
 from class_vis import prettyPicture
+from time import time
 
 features_train, labels_train, features_test, labels_test = makeTerrainData()
 
@@ -24,21 +25,37 @@ plt.scatter(grade_slow, bumpy_slow, color = "r", label="slow")
 plt.legend()
 plt.xlabel("bumpiness")
 plt.ylabel("grade")
-plt.show()
+# plt.show() # turned off
 ################################################################################
 
 
 ### your code here!  name your classifier object clf if you want the 
 ### visualization code (prettyPicture) to show you the decision boundary
+print "No. features: "+str(len(features_train[0]))
+from sklearn.neighbors import KNeighborsClassifier
+k = 8
+weights = 'uniform'
+# weights = 'distance'
+clf = KNeighborsClassifier(k, weights=weights)
+print "Fitting model..."
+t0 = time()
+clf = clf.fit(features_train, labels_train)
+print "Creating predictions..."
+t1 = time()
+pred = clf.predict(features_test)
+t2 = time()
+from sklearn.metrics import accuracy_score
+print "Computing accuracy..."
+acc = accuracy_score(pred, labels_test)
+timeDiff = round(t1-t0, 3)
+print "Training time: "+str(timeDiff)+"s"
+timeDiff = round(t2-t1, 3)
+print "Prediction time: "+str(timeDiff)+"s"
+print "Accuracy: "+str(acc)
 
 
-
-
-
-
-
-
-try:
-    prettyPicture(clf, features_test, labels_test)
-except NameError:
-    pass
+prettyPicture(clf, features_test, labels_test)
+# try:
+#     prettyPicture(clf, features_test, labels_test)
+# except NameError:
+#     pass
