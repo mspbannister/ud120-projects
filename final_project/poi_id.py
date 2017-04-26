@@ -50,10 +50,24 @@ labels, features = targetFeatureSplit(data)
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
 # Provided to give you a starting point. Try a variety of classifiers.
-from sklearn.tree import DecisionTreeClassifier
-min_samples_split=2
-clf = DecisionTreeClassifier(min_samples_split=min_samples_split)
+# from sklearn.naive_bayes import GaussianNB
+# clf = GaussianNB()
 
+from sklearn.grid_search import GridSearchCV
+param_grid = {'criterion': ['gini', 'entropy'], 
+              'min_samples_split': [2, 4, 6, 8], 
+              'min_samples_leaf': [1, 2, 3, 4, 5],
+              'max_features': [1, 2, 3, 4]}#,
+              # 'n_estimators': [5, 10, 15, 20, 25, 50]}
+
+from sklearn.tree import DecisionTreeClassifier
+# min_samples_split=2
+algo = DecisionTreeClassifier()
+
+# from sklearn.ensemble import RandomForestClassifier
+# algo = RandomForestClassifier()
+
+clf = GridSearchCV(algo, param_grid)
     
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
