@@ -78,7 +78,7 @@ After tuning my algorithm (addressed below) however, I tried removing each of th
 
 *What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?*
 
-I tried three different algorithms: Naïve Bayes (“NB”), decision trees (“DT”) and random forest (“RF”). Using each classifier’s default values, I observed the following performance using the ‘tester.py’ script:
+I tried three different classification algorithms: Naïve Bayes (“NB”), decision trees (“DT”) and random forest (“RF”). None of these algorithms require feature scaling, so I used the original data values. Using each classifier’s default parameter settings, I observed the following performance using the ‘tester.py’ script:
 ```
 NB: Accuracy: 0.87107, Precision: 0.61042, Recall: 0.26950
 DT: Accuracy: 0.79850, Precision: 0.27408, Recall: 0.24900
