@@ -6,13 +6,13 @@
 
 *Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?*
 
-The goal of this project is to use machine learning to create a program (“classifier”) that can predict whether an individual at Enron was involved in the [Enron scandal](https://en.wikipedia.org/wiki/Enron_scandal) (i.e. whether they were “persons of interest” or “POIs”), based on financial and/or email data available in the public domain. The data set contains information on 145 people connected with Enron, including salary and bonus data, the value of Enron stock held by the individual, the number of emails sent to/from that individual, and whether the individual was known to be a POI.
+The goal of this project is to use machine learning to create a program (“classifier”) that can predict whether an individual at Enron was involved in the [Enron scandal](https://en.wikipedia.org/wiki/Enron_scandal) (i.e. whether they were “persons-of-interest” or “POIs”), based on financial and/or email data available in the public domain. The data set contains information on 145 people connected with Enron, including salary and bonus data, the value of Enron stock held by the individual, the number of emails sent to/from that individual, and whether the individual was known to be a POI.
 
 Machine learning can help us spot patterns across multiple variables that enable more accurate classification than could be achieved by manual means. As far as this project is concerned, that might mean that, for example, salary may not accurately predict whether an individual was a POI, but when combined with stock holding and email information, a clearer trend may appear.
 
 The data set contains a few potential outliers. Some individuals (e.g. Kenneth Lay) have salaries and/or stock positions vastly greater than the majority. However, considering their role in the scandal, I believe these to be valid data points. The data does however include a ‘total’ entry, containing the sum of all the financial information in the data set, which I have removed (using Python’s built-in ‘pop’ function). 
 
-The main issue with the data is completeness; of 145 records, only 57 of them contain complete financial and email information for the features I have chose to examine in my final analysis. This is broken down as follows (% indicates proportion of the two respective data sets):
+The main issue with the data is completeness; of 145 records, only 57 of them contain complete financial and email information for the features I have chosen to examine in my final analysis. This is broken down as follows (% indicates proportion of the two respective data sets):
 
 ```
 Full data  
@@ -57,7 +57,7 @@ I based these choices on the following intuition:
 * Individuals are more likely to commit fraud if the (potential) financial reward outweighs the risk of getting caught. Thus, I would expect to see POIs receiving relatively greater salary and/or bonus payments than non-POIs.
 * Similarly, POIs may have been rewarded with increased stock options, which would result in them having greater total stock values. We might also consider that individuals with greater stock positions to begin with would be interested in maximising the value of the company, potentially by colluding to artificially inflate the company’s profits as was the case in the Enron scandal.
 
-To select which of these features to use in my classifier, I tried fitting them all to a decision tree in scikit-learn, and used the ```.feature_importances_``` attribute to determine which of the features were most influential, which reported the following (averaged over 1000 iterations):
+To select which of these features to use in my classifier, I tried fitting them all to a decision tree in scikit-learn (using default parameter values), and used the ```.feature_importances_``` attribute to determine which of the features were most influential, which reported the following (averaged over 1,000 iterations):
 
 ```
 total_payments: 0.00613240418118
@@ -97,13 +97,13 @@ DT: Accuracy: 0.82521, Precision: 0.36799, Recall: 0.31150
 RF: Accuracy: 0.84179, Precision: 0.40236, Recall: 0.22150
 ```
 
-Based on these results, I decided to use DT in my final analysis, as it provided the most balanced performance between evaluation metrics.
+Based on these results, I decided to use DT in my final analysis, as it provided the most balanced performance between evaluation metrics (and achieved the minimum recall of 0.3 specified in the project brief).
 
 ## Validation
 
 *What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?*
 
-Validation is the process of retaining a sample of the data set and using it to test the classifier once it has been tuned. This is important, because if the classifier is only tuned using a training and test set, it may become overfitted to the test set and thus underperform in real life applications. The validation set therefore acts as a final check to ensure overfitting has not occurred. 
+Validation is the process of retaining a sample of the data set and using it to test the classifier once it has been tuned and trained. This is important, because if the classifier is only tuned using training and test sets, it may become overfitted to the test set and thus underperform in real life applications. The validation set therefore acts as a final check to ensure overfitting has not occurred. 
 
 With small data sets such as the Enron set, the data sampling process that creates the training, test and validation sets can have a significant impact on the classifier’s performance – for example, if the distribution of data in the training set does not reflect that of the wider set. To overcome this, I used a cross-validation function (stratified shuffle split), which randomly splits the data into k samples and trains the classifier on each of the k-1 samples, before validating it on the remaining data. The classifier’s performance is thus averaged across each of the samples.
 
@@ -111,7 +111,7 @@ With small data sets such as the Enron set, the data sampling process that creat
 
 *Give at least 2 evaluation metrics and your average performance for each of them. Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance.*
 
-I evaluated my classifier primarily using the ‘precision’ and ‘recall’ metrics. [Wikipedia](https://en.wikipedia.org/wiki/Precision_and_recall) defines these as measures of “exactness” and “completeness”, respectively. In the context of this investigation, precision measures the proportion of correctly identified POIs out of the total number of individuals identified as POI by our classifier. Recall measures the proportion of correctly identified POIs out of the total number of POIs in the data set.
+I evaluated my classifier primarily using the ‘precision’ and ‘recall’ metrics. [Wikipedia](https://en.wikipedia.org/wiki/Precision_and_recall) defines these as measures of “exactness” and “completeness”, respectively. In the context of this investigation, precision measures the proportion of correctly identified POIs out of the total number of individuals classified as POIs by our classifier. Recall measures the proportion of correctly identified POIs out of the total number of POIs in the data set.
 
 Using the ‘tester.py’ script, averaged over 10 iterations, my classifier achieved the following performance:
 
@@ -129,7 +129,7 @@ Both features used: Precision: 0.36337, Recall: 0.31050
 ```
 *(note 'total_stock_value' and 'from_poi_to_this_person' were used in each test, but the classifier parameters remained constant)*
 
-It is possible that other potential features lie in the data set that would lead to more accurate classifications. For example, we might search all the emails for the presence of keywords, e.g. “[special purpose entities]( https://en.wikipedia.org/wiki/Enron_scandal#Special_purpose_entities)” and determine the frequency that they were used by individuals. I would be interested in exploring this further in a future investigation.
+It is possible that other potential features lie in the data set that would lead to more accurate classifications. For example, we might search all the emails for the presence of key words or phrases, e.g. “[special purpose entities]( https://en.wikipedia.org/wiki/Enron_scandal#Special_purpose_entities)” and determine the frequency that they were used by individuals. I would be interested in exploring this further in a future investigation.
 
 ## Declaration
 
