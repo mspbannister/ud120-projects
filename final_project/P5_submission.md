@@ -1,16 +1,16 @@
 # DAND P5: ‘Identify Fraud from Enron Email’
-## Mark Bannister
+### Mark Bannister
 ### April 2017
 
 ## Introduction
 
 *Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?*
 
-The goal of this project is to use machine learning to create a program (“classifier”) that can predict whether an individual at Enron was involved in the [Enron scandal](https://en.wikipedia.org/wiki/Enron_scandal) (“persons of interest” or “POIs”), based on financial and/or email data available in the public domain. The data set contains information on 145 people connected with Enron, including salary and bonus data, the value of Enron stock held by the individual, the number of emails sent to/from that individual, and whether the individual was known to be a POI.
+The goal of this project is to use machine learning to create a program (“classifier”) that can predict whether an individual at Enron was involved in the [Enron scandal](https://en.wikipedia.org/wiki/Enron_scandal) (i.e. whether they were “persons of interest” or “POIs”), based on financial and/or email data available in the public domain. The data set contains information on 145 people connected with Enron, including salary and bonus data, the value of Enron stock held by the individual, the number of emails sent to/from that individual, and whether the individual was known to be a POI.
 
 Machine learning can help us spot patterns across multiple variables that enable more accurate classification than could be achieved by manual means. As far as this project is concerned, that might mean that, for example, salary may not accurately predict whether an individual was a POI, but when combined with stock holding and email information, a clearer trend may appear.
 
-The data set contains a few potential outliers. Some individuals (e.g. Kenneth Lay) have salaries and/or stock positions vastly greater than the majority. However, considering their role in the scandal, I believe these to be valid data points. The data does however include a ‘total’ row, containing the sum of all the financial information in the data set, which I have removed (using Python’s built-in ‘pop’ function). 
+The data set contains a few potential outliers. Some individuals (e.g. Kenneth Lay) have salaries and/or stock positions vastly greater than the majority. However, considering their role in the scandal, I believe these to be valid data points. The data does however include a ‘total’ entry, containing the sum of all the financial information in the data set, which I have removed (using Python’s built-in ‘pop’ function). 
 
 The main issue with the data is completeness; of 145 records, only 57 of them contain complete financial and email information for the features I have chose to examine in my final analysis. This is broken down as follows (% indicates proportion of the two respective data sets):
 
@@ -72,13 +72,13 @@ to_poi_rate: 0.285829517173
 
 Given the relatively similar levels of importance attributed to 'total_stock_value', ‘from_poi_to_this_person', 'from_poi_rate' and 'to_poi_rate', I initially chose to use all four of these features in my final analysis. After visualising the data for these four features, I also chose to remove a further three outliers: Gene Humphrey, John J Lavorato and Jeffrey M Donahue Jr (none of whom were POIs).
 
-After tuning my algorithm (addressed below) however, I tried removing each of these features in turn and discovered that performance improved when 'from_poi_rate' was excluded. Therefore I decided to remove it from my final classifier. Please note that the results presented in the ‘Algorithm selection and tuning’ section include my original four features, rather than the final three.
+After tuning my algorithm (addressed below) however, I tried removing each of these features in turn and discovered that performance improved when 'from_poi_rate' was excluded. Therefore I decided to remove it from my final classifier. Please note that the results presented in the ‘Algorithm selection and tuning’ section below include my original four features, rather than the final three.
 
 ## Algorithm selection and tuning
 
 *What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?*
 
-I tried three different algorithms: Naïve Bayes (“NB”), decision trees (“DT”) and random forest (“RF”). Using each classifier’s default values, I observed the following performance using ‘tester.py’:
+I tried three different algorithms: Naïve Bayes (“NB”), decision trees (“DT”) and random forest (“RF”). Using each classifier’s default values, I observed the following performance using the ‘tester.py’ script:
 ```
 NB: Accuracy: 0.87107, Precision: 0.61042, Recall: 0.26950
 DT: Accuracy: 0.79850, Precision: 0.27408, Recall: 0.24900
@@ -88,7 +88,7 @@ For out-of-the-box performance, NB appears to be the strongest overall, while DT
 
 *What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm?*
 
-While the NB algorithm performed strongly in my initial testing, it has less scope for optimisation or ‘tuning’ than my other two algorithms. Tuning an algorithm ensures that the parameters used reflect the problem being investigated, thereby obtaining maximum performance (i.e. accuracy). They can also guard against over-fitting, e.g. by making sure a DT doesn’t create separate branches for every individual outcome.
+While the NB algorithm performed strongly in my initial testing, it has less scope for optimisation or ‘tuning’ than the other two algorithms. Tuning an algorithm ensures that the parameters used reflect the problem being investigated, thereby obtaining maximum performance (i.e. accuracy). They can also guard against over-fitting, e.g. by making sure a decision tree doesn’t create separate branches for every individual outcome.
 
 I tuned the DT and RF algorithms using scikit-learn’s GridSearchCV function, which tested different combinations of 'criterion', 'min_samples_split', 'max_features', 'max_depth' and (for RF) 'n_estimators'. The best results I was able to achieve were as follows:
 
@@ -105,13 +105,13 @@ Based on these results, I decided to use DT in my final analysis, as it provided
 
 Validation is the process of retaining a sample of the data set and using it to test the classifier once it has been tuned. This is important, because if the classifier is only tuned using a training and test set, it may become overfitted to the test set and thus underperform in real life applications. The validation set therefore acts as a final check to ensure overfitting has not occurred. 
 
-With small data sets such as the Enron set, the data sampling process that creates the training, test and validation sets can have a significant impact on the classifier’s performance – for example, if the distribution of data in the training set do not reflect that of the wider set. To overcome this, I used a cross-validation function (stratified shuffle split), which randomly splits the data into k samples and trains the classifier on each of the k-1 samples, before validating it on the remaining data. The classifier’s performance is thus averaged across each of the samples.
+With small data sets such as the Enron set, the data sampling process that creates the training, test and validation sets can have a significant impact on the classifier’s performance – for example, if the distribution of data in the training set does not reflect that of the wider set. To overcome this, I used a cross-validation function (stratified shuffle split), which randomly splits the data into k samples and trains the classifier on each of the k-1 samples, before validating it on the remaining data. The classifier’s performance is thus averaged across each of the samples.
 
 ## Evaluation
 
 *Give at least 2 evaluation metrics and your average performance for each of them. Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance.*
 
-I evaluated my classifier primarily using the ‘precision’ and ‘recall’ metrics. [Wikipedia](https://en.wikipedia.org/wiki/Precision_and_recall) defines these as measures of “exactness” and “completeness”, respectively. In the context of this data set, precision measures the proportion of correctly identified POIs out of the total number of individuals identified as POI by our classifier. Recall measures the proportion of correctly identified POIs out of the total number of POIs in the data set.
+I evaluated my classifier primarily using the ‘precision’ and ‘recall’ metrics. [Wikipedia](https://en.wikipedia.org/wiki/Precision_and_recall) defines these as measures of “exactness” and “completeness”, respectively. In the context of this investigation, precision measures the proportion of correctly identified POIs out of the total number of individuals identified as POI by our classifier. Recall measures the proportion of correctly identified POIs out of the total number of POIs in the data set.
 
 Using the ‘tester.py’ script, averaged over 10 iterations, my classifier achieved the following performance:
 
@@ -127,7 +127,7 @@ Neither feature used: Precision: 0.26231, Recall: 0.19450
 'to_poi_rate' used: Precision: 0.37486, Recall: 0.33250
 Both features used: Precision: 0.36337, Recall: 0.31050
 ```
-(note 'total_stock_value' and 'from_poi_to_this_person' are used in each test, but the classifier parameters remain constant)
+*(note 'total_stock_value' and 'from_poi_to_this_person' were used in each test, but the classifier parameters remained constant)*
 
 It is possible that other potential features lie in the data set that would lead to more accurate classifications. For example, we might search all the emails for the presence of keywords, e.g. “[special purpose entities]( https://en.wikipedia.org/wiki/Enron_scandal#Special_purpose_entities)” and determine the frequency that they were used by individuals. I would be interested in exploring this further in a future investigation.
 
@@ -137,8 +137,6 @@ I hereby confirm that this submission is my work. I have cited above the origins
 
 ## List of resources used
 
-* https://docs.scipy.org/doc/numpy/reference/generated/numpy.hstack.html#numpy.hstack  
-* https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.isnan.html  
 * http://scikit-learn.org/stable/modules/feature_selection.html  
 * http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
 * http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
