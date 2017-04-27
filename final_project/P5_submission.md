@@ -1,6 +1,6 @@
 # DAND P5: ‘Identify Fraud from Enron Email’
-### Mark Bannister
-### April 2017
+**Mark Bannister**
+*April 2017*
 
 ## Introduction
 
