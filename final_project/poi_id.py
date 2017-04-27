@@ -7,7 +7,6 @@
     Author: Mark Bannister (mspbannister@gmail.com)
 """
 
-
 import sys
 import pickle
 sys.path.append("../tools/")
