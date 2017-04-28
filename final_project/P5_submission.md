@@ -40,9 +40,9 @@ Number of data points: 143
   
 Final analysis  
 ==============    
-Number of data points: 57  
-    POIs: 14 (24.56%)  
-    Non-POIs: 43 (75.44%)    
+Number of data points: 52  
+    POIs: 14 (26.92%)  
+    Non-POIs: 38 (73.08%)    
 ```
 
 Not only is the data incomplete, but the disparity between the number of POIs and non-POIs may result in problems training a classification algorithm to accurately distinguish between the two (an effect known as [class imbalance](http://www.chioka.in/class-imbalance-problem/).
@@ -196,4 +196,3 @@ I hereby confirm that this submission is my work. I have cited above the origins
 * http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
 * http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html  
 * http://scikit-learn.org/stable/modules/cross_validation.html
-
