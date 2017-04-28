@@ -10,7 +10,7 @@ In the criminal investigation that ensued, a large volume of confidential inform
 
 ## Data exploration
 
-*Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?*
+>  *Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?*
 
 The goal of this project is to investigate whether we can use machine learning to create a program (“classifier”) that can predict whether an individual at Enron was involved in the Enron scandal (i.e. whether they were “persons-of-interest” or “POIs”), based on financial and/or email data available in the public domain. The data set contains information on 146 people connected with Enron, including salary and bonus data, the value of Enron stock held by the individual, the number of emails sent to/from that individual, and whether the individual was known to be a POI.
 
@@ -81,7 +81,7 @@ w/both new features: Accuracy: 0.80386, Precision: 0.29595, Recall: 0.27050
 
 We can see that adding ```'to_poi_rate'``` improved accuracy and precision, but reduced the classifier’s recall. Adding ```'from_poi_rate'``` appeared to reduce performance both when it was added on its own, and when both new features were added.
 
-To select which of these features to use in my classifier, I fit them all to a decision tree and used the ```.feature_importances_``` attribute to determine which of the features were most influential, which reported the following (averaged over 100 iterations):
+To select which of these features to use in my classifier, I fit them all to a decision tree and used the ```.feature_importances_``` attribute to determine which features were most influential. This produced the following results (averaged over 100 iterations):
 
 ```
 total_payments: 0.186683494368  
@@ -94,11 +94,11 @@ from_poi_rate: 0.0889379547817
 to_poi_rate: 0.213138555863   
 ```
 
-Given the relatively similar levels of importance attributed to ```'total_payments'```, ```'total_stock_value'```, ```‘from_poi_to_this_person'``` and ```'to_poi_rate'```, I decided to explore these features more. After visualising them, I chose to remove the following outliers:
+Given the relatively similar levels of importance attributed to ```'total_payments'```, ```'total_stock_value'```, ```‘from_poi_to_this_person'``` and ```'to_poi_rate'```, I decided to explore these features further. After visualising them, I chose to remove the following outliers:
 
-* ```'HUMPHREY GENE E'```: 'to_poi_rate' outlier
-* ```'LAVORATO JOHN J'```: 'from_poi_to_this_person' / 'total_payments' outlier
-* ```'FREVERT MARK A'```: 'total_payments' outlier
+* ```'HUMPHREY GENE E'```: a ```'to_poi_rate'``` outlier
+* ```'LAVORATO JOHN J'```: a ```'from_poi_to_this_person' ```/ ```'total_payments'``` outlier
+* ```'FREVERT MARK A'```: a ```'total_payments'``` outlier
 
 I then repeated the ```.feature_importances_```  exercise with only these four features, and obtained the following results:
 
@@ -116,15 +116,15 @@ w/ 'from_poi_to_this_person': Accuracy: 0.81564, Precision: 0.32677, Recall: 0.2
 w/out 'from_poi_to_this_person': Accuracy: 0.80707, Precision: 0.29960, Recall: 0.26200
 ```
 
-While ```'from_poi_to_this_person'``` may not be as important as the other three features, it clearly improves the accuracy of the classifier, so I chose to retain all four features in my final analysis.
+While ```'from_poi_to_this_person'``` may not be as important as the other three features, it seems to improve the accuracy of the classifier, so I chose to retain all four features in my final analysis.
 
 ## Algorithm selection and tuning
 
 *What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?*
 
-I tried three different classification algorithms: Naïve Bayes (“NB”), decision trees (“DT”) and random forest (“RF”). None of these algorithms require feature scaling, so I used the original data values. Using each classifier’s default parameter settings, I observed the following performance using the ```'tester.py'``` script:
+I tried three different classification algorithms: Naïve Bayes (“NB”), decision tree (“DT”) and random forest (“RF”). None of these algorithms require feature scaling, so I used the original data values. Using each classifier’s default parameter settings, I observed the following performance using the ```'tester.py'``` script:
 ```
-NB: Accuracy: 0.85507, Precision: 0.48488,	Recall: 0.23250
+NB: Accuracy: 0.85507, Precision: 0.48488, Recall: 0.23250
 DT: Accuracy: 0.81564, Precision: 0.32677, Recall: 0.27400
 RF: Accuracy: 0.84429, Precision: 0.40405, Recall: 0.18950
 ```
