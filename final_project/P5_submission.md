@@ -70,7 +70,7 @@ I based these choices on the following intuition:
 * Individuals are more likely to commit fraud if the (potential) financial rewards outweigh the risk of getting caught. Thus, I would expect to see POIs receiving relatively greater salary and/or bonus payments than non-POIs.
 * Similarly, POIs may have been rewarded with increased stock options, which would result in them having greater total stock values. We might also consider that individuals with greater stock positions to begin with would be interested in maximising the value of the company, potentially by colluding to artificially inflate the company’s profits, as was the case in the Enron scandal.
 
-I fit the original six features to a decision tree in scikit-learn (using default parameter values) and tested their performance using the ‘tester.py’ script. I then repeated the test with each of my new features, yielding the following results: 
+I fit the original six features to a decision tree in scikit-learn (using default parameter values) and tested their performance using the ```'tester.py'``` script. I then repeated the test with each of my new features, yielding the following results: 
 
 ```
 Original features: Accuracy: 0.79664, Precision: 0.28836, Recall: 0.28850
@@ -122,7 +122,7 @@ While ```'from_poi_to_this_person'``` may not be as important as the other three
 
 *What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?*
 
-I tried three different classification algorithms: Naïve Bayes (“NB”), decision trees (“DT”) and random forest (“RF”). None of these algorithms require feature scaling, so I used the original data values. Using each classifier’s default parameter settings, I observed the following performance using the ‘tester.py’ script:
+I tried three different classification algorithms: Naïve Bayes (“NB”), decision trees (“DT”) and random forest (“RF”). None of these algorithms require feature scaling, so I used the original data values. Using each classifier’s default parameter settings, I observed the following performance using the ```'tester.py'``` script:
 ```
 NB: Accuracy: 0.85507, Precision: 0.48488,	Recall: 0.23250
 DT: Accuracy: 0.81564, Precision: 0.32677, Recall: 0.27400
@@ -176,7 +176,7 @@ The specific function I used (```StratifiedShuffleSplit```) has the additional b
 
 I evaluated my classifier primarily using the ‘precision’ and ‘recall’ metrics. [Wikipedia](https://en.wikipedia.org/wiki/Precision_and_recall) defines these as measures of “exactness” and “completeness”, respectively. In the context of this investigation, precision measures the proportion of correctly identified POIs out of the total number of individuals classified as POIs by our classifier. Recall measures the proportion of correctly identified POIs out of the total number of POIs in the data set.
 
-Using the ‘tester.py’ script, averaged over 100 iterations, my classifier achieved the following performance:
+Using the ```'tester.py'``` script, averaged over 100 iterations, my classifier achieved the following performance:
 
 ```
 Precision: 0.351787348863, Recall: 0.3083
@@ -196,3 +196,4 @@ I hereby confirm that this submission is my work. I have cited above the origins
 * http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
 * http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html  
 * http://scikit-learn.org/stable/modules/cross_validation.html
+
