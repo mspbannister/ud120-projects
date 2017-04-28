@@ -51,7 +51,7 @@ By using only records containing complete information, we reduce the amount of d
 
 ## Feature selection
 
-*What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset -- explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.*
+> *What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset -- explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.*
 
 I have chosen to focus on the following features: 
 * ```'total_payments'``` (i.e. total salary and bonus payments)
@@ -120,7 +120,7 @@ While ```'from_poi_to_this_person'``` may not be as important as the other three
 
 ## Algorithm selection and tuning
 
-*What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?*
+> *What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?*
 
 I tried three different classification algorithms: Naïve Bayes (“NB”), decision tree (“DT”) and random forest (“RF”). None of these algorithms require feature scaling, so I used the original data values. Using each classifier’s default parameter settings, I observed the following performance using the ```'tester.py'``` script:
 ```
@@ -130,7 +130,7 @@ RF: Accuracy: 0.84429, Precision: 0.40405, Recall: 0.18950
 ```
 For out-of-the-box performance, NB appears to be the strongest overall, while DT was the most balanced. 
 
-*What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm?*
+> *What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm?*
 
 Tuning the parameters of an algorithm is the process of optimising those parameters to enable maximum performance (i.e. accuracy) on the problem being investigated. The parameters control the algorithm’s response to training data, and ensure it matches the shape of the data. For example, the ‘kernal’ parameter in a support vector machine classifier determines whether the algorithm tries to impose a linear or non-linear decision boundary. Parameters can also guard against over-fitting, e.g. by making sure a decision tree classifier doesn’t create separate branches for every individual outcome.
 
@@ -162,7 +162,7 @@ max_depth=None
 
 ## Validation
 
-*What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?*
+> *What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?*
 
 Validation is the process of retaining a sample of the data set and using it to test the classifier once it has been tuned and trained. This is important, because if the classifier is only tuned using training and test sets, it may become overfitted to the test set and thus underperform in real life applications. The validation set therefore acts as a final check to ensure overfitting has not occurred. 
 
@@ -172,7 +172,7 @@ The specific function I used (```StratifiedShuffleSplit```) has the additional b
 
 ## Evaluation
 
-*Give at least 2 evaluation metrics and your average performance for each of them. Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance.*
+> *Give at least 2 evaluation metrics and your average performance for each of them. Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance.*
 
 I evaluated my classifier primarily using the ‘precision’ and ‘recall’ metrics. [Wikipedia](https://en.wikipedia.org/wiki/Precision_and_recall) defines these as measures of “exactness” and “completeness”, respectively. In the context of this investigation, precision measures the proportion of correctly identified POIs out of the total number of individuals classified as POIs by our classifier. Recall measures the proportion of correctly identified POIs out of the total number of POIs in the data set.
 
@@ -196,4 +196,3 @@ I hereby confirm that this submission is my work. I have cited above the origins
 * http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
 * http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html  
 * http://scikit-learn.org/stable/modules/cross_validation.html
-
