@@ -12,7 +12,7 @@ In the criminal investigation that ensued, a large volume of confidential inform
 
 *Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?*
 
-The goal of this project is to use machine learning to create a program (“classifier”) that can predict whether an individual at Enron was involved in the Enron scandal (i.e. whether they were “persons-of-interest” or “POIs”), based on financial and/or email data available in the public domain. The data set contains information on 146 people connected with Enron, including salary and bonus data, the value of Enron stock held by the individual, the number of emails sent to/from that individual, and whether the individual was known to be a POI.
+The goal of this project is to investigate whether we can use machine learning to create a program (“classifier”) that can predict whether an individual at Enron was involved in the Enron scandal (i.e. whether they were “persons-of-interest” or “POIs”), based on financial and/or email data available in the public domain. The data set contains information on 146 people connected with Enron, including salary and bonus data, the value of Enron stock held by the individual, the number of emails sent to/from that individual, and whether the individual was known to be a POI.
 
 Machine learning can help us spot patterns across multiple variables that enable more accurate classification than could be achieved by manual means. As far as this project is concerned, that might mean that, for example, salary may not accurately predict whether an individual was a POI, but when combined with stock holding and email information, a clearer trend may appear.
 
@@ -45,7 +45,7 @@ Number of data points: 52
     Non-POIs: 38 (73.08%)    
 ```
 
-Not only is the data incomplete, but the disparity between the number of POIs and non-POIs may result in problems training a classification algorithm to accurately distinguish between the two (an effect known as [class imbalance](http://www.chioka.in/class-imbalance-problem/).
+Not only is much of the data incomplete, but the disparity between the number of POIs and non-POIs may result in problems training a classification algorithm to accurately distinguish between the two (an effect known as [class imbalance](http://www.chioka.in/class-imbalance-problem/)).
 
 By using only records containing complete information, we reduce the amount of data that we can use to train our classifier, which will inevitably impact its accuracy. However, given that POIs represent a greater proportion of the training data than the full data set (24.6% vs. 12.6%), clearer patterns may emerge that will better distinguish between the two classes.
 
@@ -67,10 +67,10 @@ I also created two new features:
 
 I based these choices on the following intuition:
 * Complex fraud requires collaboration and communication, which could be demonstrated through higher than normal rates of emails being sent to/from POIs from other POIs.
-* Individuals are more likely to commit fraud if the (potential) financial reward outweighs the risk of getting caught. Thus, I would expect to see POIs receiving relatively greater salary and/or bonus payments than non-POIs.
-* Similarly, POIs may have been rewarded with increased stock options, which would result in them having greater total stock values. We might also consider that individuals with greater stock positions to begin with would be interested in maximising the value of the company, potentially by colluding to artificially inflate the company’s profits as was the case in the Enron scandal.
+* Individuals are more likely to commit fraud if the (potential) financial rewards outweigh the risk of getting caught. Thus, I would expect to see POIs receiving relatively greater salary and/or bonus payments than non-POIs.
+* Similarly, POIs may have been rewarded with increased stock options, which would result in them having greater total stock values. We might also consider that individuals with greater stock positions to begin with would be interested in maximising the value of the company, potentially by colluding to artificially inflate the company’s profits, as was the case in the Enron scandal.
 
-I fit the original six features to a decision tree in scikit-learn (using default parameter values) and tested their performance using the ‘tester.py’ script. I then repeated the test with each of my new features, yielding the following results:
+I fit the original six features to a decision tree in scikit-learn (using default parameter values) and tested their performance using the ‘tester.py’ script. I then repeated the test with each of my new features, yielding the following results: 
 
 ```
 Original features: Accuracy: 0.79664, Precision: 0.28836, Recall: 0.28850
@@ -109,7 +109,7 @@ from_poi_to_this_person: 0.093454782616
 to_poi_rate: 0.243645247629
 ```
 
-Given this now seems to suggest that ```'from_poi_to_this_person'``` is significantly less important than the other three features, I decided to test two combinations of these features using a default decision tree classifier and the ‘tester.py’ script: one including ```'from_poi_to_this_person'```, and one excluding it. The results were as follows:
+Given this now seems to suggest that ```'from_poi_to_this_person'``` is significantly less important than the other three features, I decided to test two combinations of these features using a default decision tree classifier and the ```'tester.py'``` script: one including ```'from_poi_to_this_person'```, and one excluding it. The results were as follows:
 
 ```
 w/ 'from_poi_to_this_person': Accuracy: 0.81564, Precision: 0.32677, Recall: 0.27400
