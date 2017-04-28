@@ -18,12 +18,12 @@ Machine learning can help us spot patterns across multiple variables that enable
 
 The data set contains a few potential outliers. Some individuals (e.g. Kenneth Lay) have salaries and/or stock positions vastly greater than the majority. However, considering their role in the scandal, I believe these to be valid data points. There are two records that do not relate to individuals at all: 
 
-* ```‘TOTAL’```, containing the sum of all the financial information in the data set; and
-* ```'THE TRAVEL AGENCY IN THE PARK'```, which is clearly not an individual
+* ```'TOTAL'```, containing the sum of all the financial information in the data set; and
+* ```'THE TRAVEL AGENCY IN THE PARK'```, which is clearly not an individual.
 
-And one, ```'LOCKHART EUGENE E'```, that does not contain any information whatsoever. I removed all three of these records using Python’s built-in ‘pop’ function, reducing the data set to 143 records.
+One of the other records, ```'LOCKHART EUGENE E'```, does not contain any information whatsoever. I removed all three of these entries using Python’s built-in ```'pop'``` function, reducing the data set to 143 records.
 
-The main issue with the data is completeness; of 143 records, only 57 of them contain complete financial and email information for the features I have chosen to examine in my final analysis. This is broken down as follows (% indicates proportion of the two respective data sets):
+The main issue with the data is completeness; of 143 records, only 52 of them contain complete financial and email information for the features I have chosen to examine in my final analysis. This is broken down as follows (% indicates proportion of the two respective data sets):
 
 ```
 Full data  
@@ -45,9 +45,11 @@ Number of data points: 52
     Non-POIs: 38 (73.08%)    
 ```
 
-Not only is much of the data incomplete, but the disparity between the number of POIs and non-POIs may result in problems training a classification algorithm to accurately distinguish between the two (an effect known as [class imbalance](http://www.chioka.in/class-imbalance-problem/)).
+By using only records containing complete information, we reduce the amount of data that we can use to train our classifier, which will inevitably impact its accuracy.
 
-By using only records containing complete information, we reduce the amount of data that we can use to train our classifier, which will inevitably impact its accuracy. However, given that POIs represent a greater proportion of the training data than the full data set (24.6% vs. 12.6%), clearer patterns may emerge that will better distinguish between the two classes.
+Not only is much of the data incomplete, but the significant disparity between the number of POIs and non-POIs may result in problems when training a classification algorithm to distinguish between the two (an effect known as [class imbalance](http://www.chioka.in/class-imbalance-problem/)). 
+
+Ultimately, these two issues may limit the usefulness of our final classifier.
 
 ## Feature selection
 
@@ -70,7 +72,7 @@ I based these choices on the following intuition:
 * Individuals are more likely to commit fraud if the (potential) financial rewards outweigh the risk of getting caught. Thus, I would expect to see POIs receiving relatively greater salary and/or bonus payments than non-POIs.
 * Similarly, POIs may have been rewarded with increased stock options, which would result in them having greater total stock values. We might also consider that individuals with greater stock positions to begin with would be interested in maximising the value of the company, potentially by colluding to artificially inflate the company’s profits, as was the case in the Enron scandal.
 
-I fit the original six features to a decision tree in scikit-learn (using default parameter values) and tested their performance using the ```'tester.py'``` script. I then repeated the test with each of my new features, yielding the following results: 
+I fit the original six features to a decision tree classifier in scikit-learn (using default parameter values) and tested their performance using the ```'tester.py'``` script. I then repeated the test with each of my new features, yielding the following results: 
 
 ```
 Original features: Accuracy: 0.79664, Precision: 0.28836, Recall: 0.28850
@@ -79,9 +81,9 @@ w/'to_poi_rate': Accuracy: 0.80736, Precision: 0.30454, Recall: 0.27150
 w/both new features: Accuracy: 0.80386, Precision: 0.29595, Recall: 0.27050
 ```
 
-We can see that adding ```'to_poi_rate'``` improved accuracy and precision, but reduced the classifier’s recall. Adding ```'from_poi_rate'``` appeared to reduce performance both when it was added on its own, and when both new features were added.
+We can see that adding ```'to_poi_rate'``` improved accuracy and precision, but reduced the classifier’s recall. Adding ```'from_poi_rate'``` appeared to reduce performance both when it was added on its own, and when it was added in combination with ```'to_poi_rate'```.
 
-To select which of these features to use in my classifier, I fit them all to a decision tree and used the ```.feature_importances_``` attribute to determine which features were most influential. This produced the following results (averaged over 100 iterations):
+To select which of these features to use in my classifier, I fitted them all to a decision tree and used the ```.feature_importances_``` attribute to determine which features were most influential. This produced the following results (averaged over 100 iterations):
 
 ```
 total_payments: 0.186683494368  
@@ -112,7 +114,7 @@ to_poi_rate: 0.243645247629
 Given this now seems to suggest that ```'from_poi_to_this_person'``` is significantly less important than the other three features, I decided to test two combinations of these features using a default decision tree classifier and the ```'tester.py'``` script: one including ```'from_poi_to_this_person'```, and one excluding it. The results were as follows:
 
 ```
-w/ 'from_poi_to_this_person': Accuracy: 0.81564, Precision: 0.32677, Recall: 0.27400
+w/'from_poi_to_this_person': Accuracy: 0.81564, Precision: 0.32677, Recall: 0.27400
 w/out 'from_poi_to_this_person': Accuracy: 0.80707, Precision: 0.29960, Recall: 0.26200
 ```
 
@@ -132,9 +134,11 @@ For out-of-the-box performance, NB appears to be the strongest overall, while DT
 
 > *What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm?*
 
-Tuning the parameters of an algorithm is the process of optimising those parameters to enable maximum performance (i.e. accuracy) on the problem being investigated. The parameters control the algorithm’s response to training data, and ensure it matches the shape of the data. For example, the ‘kernal’ parameter in a support vector machine classifier determines whether the algorithm tries to impose a linear or non-linear decision boundary. Parameters can also guard against over-fitting, e.g. by making sure a decision tree classifier doesn’t create separate branches for every individual outcome.
+Tuning the parameters of an algorithm is the process of optimising those parameters to enable maximum performance (i.e. accuracy) on the problem being investigated. The parameters control the algorithm’s response to training data, and help ensure it reflects the shape of the data. 
 
-While the NB algorithm performed strongly in my initial testing, it has less scope for optimisation or ‘tuning’ than the other two algorithms. I tuned the DT and RF algorithms using scikit-learn’s ```GridSearchCV``` function, which tested different combinations of 'criterion', 'min_samples_split', 'max_features', 'max_depth' and (for RF) 'n_estimators' as follows:
+For example, the ‘kernal’ parameter in a support vector machine classifier determines whether the algorithm tries to impose a linear or non-linear decision boundary. If a linear decision boundary is applied to non-linear data, the algorithm is unlikely to produce accurate classifications. Correctly tuned parameters can also guard against over-fitting, e.g. by making sure a decision tree classifier doesn’t create separate branches for every individual outcome.
+
+While the NB algorithm performed strongly in my initial testing, it has less scope for parameter optimisation than the other two algorithms. I tuned the DT and RF algorithms using scikit-learn’s ```GridSearchCV``` function, which tested different combinations of ```'criterion'```, ```'min_samples_split'```, ```'max_features'```, ```'max_depth'``` and (for RF) ```'n_estimators'``` as follows:
 
 ```
 'criterion': ['gini', 'entropy'],
@@ -151,7 +155,7 @@ DT: Accuracy: 0.82007, Precision: 0.35397, Recall: 0.31450
 RF: Accuracy: 0.84271, Precision: 0.40578, Recall: 0.21750
 ```
 
-Based on these results, I decided to use DT in my final analysis, as it provided the most balanced performance between evaluation metrics (and achieved the minimum recall of 0.3 specified in the project brief). The final parameter settings were as follows:
+Based on these results, I decided to use DT in my final analysis, as it provided the most balanced performance between evaluation metrics and achieved the minimum recall of 0.3 (as specified in the project brief). The final parameter settings were as follows:
 
 ```
 max_features=2,  
@@ -183,7 +187,7 @@ Precision: 0.351787348863, Recall: 0.3083
 ```
 Therefore, approximately 35.2% of the individuals identified as POIs by the classifier were, in fact, POIs, which corresponded to 30.8% of the overall number of POIs in the data set. Clearly this is not particularly accurate, which would impact its usefulness on any similar investigations in future. 
 
-As demonstrated above, one of the features I developed during this investigation (```'to_poi_rate'```) improved the performance of my classifier. It is possible that other potential features lie in the data set that would lead to more accurate classifications. For example, we might search all the emails for the presence of key words or phrases, e.g. “[special purpose entities]( https://en.wikipedia.org/wiki/Enron_scandal#Special_purpose_entities)” and determine the frequency that they were used by individuals. I would be interested in exploring this further in a future investigation.
+As demonstrated earlier, one of the features I developed during this investigation (```'to_poi_rate'```) improved the performance of my classifier. It is possible that other potential features lie in the data set that would lead to more accurate classifications. For example, we might search all the emails for the presence of key words or phrases, e.g. “[special purpose entities]( https://en.wikipedia.org/wiki/Enron_scandal#Special_purpose_entities)” and determine the frequency that they were used by individuals. I would be interested in exploring this further in a future investigation.
 
 ## Declaration
 
@@ -195,4 +199,5 @@ I hereby confirm that this submission is my work. I have cited above the origins
 * http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
 * http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
 * http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html  
-* http://scikit-learn.org/stable/modules/cross_validation.html
+* http://scikit-learn.org/stable/modules/cross_validation.html  
+* http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedShuffleSplit.html
