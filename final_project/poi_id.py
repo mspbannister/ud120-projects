@@ -44,7 +44,7 @@ for key in data_dict:
         to_poi_rate = 1. * data_dict[key]['from_this_person_to_poi'] / \
         data_dict[key]['from_messages']
     except:
-        from_poi_rate = "NaN"
+        to_poi_rate = "NaN"
     my_dataset[key]['from_poi_rate'] = from_poi_rate
     my_dataset[key]['to_poi_rate'] = to_poi_rate
 
