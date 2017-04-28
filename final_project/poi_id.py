@@ -18,8 +18,14 @@ from tester import dump_classifier_and_data, test_classifier
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
 
-features_list = ['poi', 'total_stock_value', 'from_poi_to_this_person', 
-                 'to_poi_rate']
+# Initial features list
+# features_list = ['poi','total_payments', 'total_stock_value',
+#                  'from_poi_to_this_person', 'from_this_person_to_poi',
+#                  'to_messages', 'from_messages', 'from_poi_rate', 'to_poi_rate']
+
+# Final features list
+features_list = ['poi','total_payments', 'total_stock_value',
+                 'from_poi_to_this_person', 'to_poi_rate']
 
 ### Load the dictionary containing the dataset
 with open("final_project_dataset.pkl", "r") as data_file:
@@ -27,9 +33,11 @@ with open("final_project_dataset.pkl", "r") as data_file:
 
 ### Task 2: Remove outliers
 data_dict.pop('TOTAL', 0) # Contains column total data
+data_dict.pop('THE TRAVEL AGENCY IN THE PARK', 0) # not an individual
+data_dict.pop('LOCKHART EUGENE E', 0) # record contains no information
 data_dict.pop('HUMPHREY GENE E', 0) # 'to_poi_rate' outlier
-data_dict.pop('DONAHUE JR JEFFREY M', 0) # 'from_poi_rate' outlier
-data_dict.pop('LAVORATO JOHN J', 0) # 'from_poi_to_this_person' outlier
+data_dict.pop('LAVORATO JOHN J', 0) # 'from_poi_to_this_person' / 'total_payments' outlier
+data_dict.pop('FREVERT MARK A', 0) # 'total_payments' outlier
 
 ### Task 3: Create new feature(s)
 my_dataset = {}
@@ -81,25 +89,25 @@ labels, features = targetFeatureSplit(data)
 # param_grid = {'criterion': ['gini', 'entropy'],
 #               'min_samples_split': [2, 4, 6, 8],
 #               'max_features': [2, 3, 4],
-#               'max_depth': [3, 4, 5, None]}
-#               # 'n_estimators': [5, 10, 15, 20]}
+#               'max_depth': [3, 4, 5, None],
+#               'n_estimators': [5, 10, 15, 20]}
 
 # from sklearn.tree import DecisionTreeClassifier
 # algo = DecisionTreeClassifier()
 
 # from sklearn.ensemble import RandomForestClassifier
 # algo = RandomForestClassifier()
-
-# clf = GridSearchCV(algo, param_grid, scoring='recall', cv=4)
+#
+# clf = GridSearchCV(algo, param_grid)
 
 # from sklearn.ensemble import RandomForestClassifier
 # clf = RandomForestClassifier(max_features=3, min_samples_split=4,
-#                               criterion='entropy', max_depth=None,
-#                               n_estimators=10)
+#                               criterion='entropy', max_depth=3,
+#                               n_estimators=5)
 
 # Create final classifer
 from sklearn.tree import DecisionTreeClassifier
-clf = DecisionTreeClassifier(max_features=2, min_samples_split=4,
+clf = DecisionTreeClassifier(max_features=2, min_samples_split=2,
                              criterion='entropy', max_depth=None)
 
 # Test using Udacity testing function
